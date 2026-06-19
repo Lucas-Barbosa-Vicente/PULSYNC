@@ -44,4 +44,5 @@ export interface DaySummary {
   sleepHours: number
   sleepGoal: number
   overallProgress: number
+  stepsCount: number
 }

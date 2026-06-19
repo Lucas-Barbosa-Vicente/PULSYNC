@@ -74,7 +74,7 @@ export function useFeed() {
     async (userId: string, date: Date): Promise<DaySummary> => {
       const dateStr = format(date, 'yyyy-MM-dd')
 
-      const [workoutsRes, habitsRes, habitsLogRes, mealsRes, sleepRes] = await Promise.all([
+      const [workoutsRes, habitsRes, habitsLogRes, mealsRes, sleepRes, stepsRes] = await Promise.all([
         supabase
           .from('workouts')
           .select('id', { count: 'exact', head: true })
@@ -104,6 +104,12 @@ export function useFeed() {
           .eq('user_id', userId)
           .order('start_time', { ascending: false })
           .limit(1),
+        supabase
+          .from('step_logs')
+          .select('steps')
+          .eq('user_id', userId)
+          .eq('date', dateStr)
+          .maybeSingle(),
       ])
 
       const workoutDone = (workoutsRes.count ?? 0) > 0
@@ -116,6 +122,7 @@ export function useFeed() {
       const caloriesGoal = 2000
       const sleepHours = ((sleepRes.data?.[0]?.duration_minutes ?? 0) / 60)
       const sleepGoal = 8
+      const stepsCount = stepsRes.data?.steps ?? 0
 
       const workoutProgress = workoutDone ? 1 : 0
       const habitProgress = habitsTotal > 0 ? habitsCompleted / habitsTotal : 0
@@ -132,6 +139,7 @@ export function useFeed() {
         sleepHours,
         sleepGoal,
         overallProgress,
+        stepsCount,
       }
     },
     [supabase]

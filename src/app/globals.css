@@ -1,26 +1,188 @@
 @import "tailwindcss";
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  /* FUNDOS */
+  --bg          : #000000;
+  --surface     : #1C1C1E;
+  --surface-high: #2C2C2E;
+  --surface-card: #141414;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* CORES PRIMÁRIAS */
+  --primary     : #00D4AA;
+  --accent      : #FF6B35;
+  --social      : #A855F7;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* MÉTRICAS */
+  --metric-move : #FF375F;
+  --metric-steps: #AF52DE;
+  --metric-dist : #30D158;
+  --metric-sleep: #0A84FF;
+  --metric-heart: #FF6961;
+  --metric-water: #32ADE6;
+
+  /* TREINO */
+  --workout-bg  : #0D2E0D;
+  --workout-icon: #B5E61D;
+
+  /* TEXTOS */
+  --text-primary  : #FFFFFF;
+  --text-secondary: #8E8E93;
+  --text-muted    : #48484A;
+
+  /* BORDAS */
+  --border      : #38383A;
+
+  /* STATUS */
+  --success     : #30D158;
+  --warning     : #FF9F0A;
+  --error       : #FF453A;
+
+  /* CONQUISTAS */
+  --bronze  : #CD7F32;
+  --silver  : #C0C0C0;
+  --gold    : #FFD700;
+  --platinum: #E8E8F0;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-inter, 'Inter', -apple-system, BlinkMacSystemFont, sans-serif);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.font-mono {
+  font-family: var(--font-mono, 'JetBrains Mono', 'Roboto Mono', monospace);
+}
+
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Tipografia Apple-like */
+h1, .title-display {
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--text-primary);
+}
+
+h2, .title-section {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+.metric-value {
+  font-size: 36px;
+  font-weight: 700;
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  letter-spacing: -1px;
+}
+
+.metric-value-large {
+  font-size: 52px;
+  font-weight: 900;
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  letter-spacing: -2px;
+}
+
+.label-today {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+/* Glassmorphism */
+.glass {
+  background: rgba(28, 28, 30, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Glows */
+.glow-primary { box-shadow: 0 0 20px rgba(0, 212, 170, 0.25); }
+.glow-move    { box-shadow: 0 0 20px rgba(255, 55, 95, 0.25); }
+.glow-steps   { box-shadow: 0 0 20px rgba(175, 82, 222, 0.25); }
+.glow-dist    { box-shadow: 0 0 20px rgba(48, 209, 88, 0.25); }
+
+/* Pressable */
+.pressable {
+  transition: transform 150ms ease;
+  cursor: pointer;
+}
+.pressable:active { transform: scale(0.96); }
+
+/* Seta de navegação nos cards (estilo iOS) */
+.card-arrow {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* Keyframes */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 212, 170, 0.4); }
+  50%       { box-shadow: 0 0 0 8px rgba(0, 212, 170, 0); }
+}
+
+@theme {
+  --color-bg          : var(--bg);
+  --color-surface     : var(--surface);
+  --color-surface-high: var(--surface-high);
+  --color-surface-card: var(--surface-card);
+  --color-primary     : var(--primary);
+  --color-accent      : var(--accent);
+  --color-social      : var(--social);
+  --color-metric-move : var(--metric-move);
+  --color-metric-steps: var(--metric-steps);
+  --color-metric-dist : var(--metric-dist);
+  --color-metric-sleep: var(--metric-sleep);
+  --color-metric-heart: var(--metric-heart);
+  --color-metric-water: var(--metric-water);
+  --color-workout-bg  : var(--workout-bg);
+  --color-workout-icon: var(--workout-icon);
+  --color-text-primary  : var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted    : var(--text-muted);
+  --color-success : var(--success);
+  --color-warning : var(--warning);
+  --color-error   : var(--error);
+  --color-border  : var(--border);
+  --color-bronze  : var(--bronze);
+  --color-silver  : var(--silver);
+  --color-gold    : var(--gold);
+  --color-platinum: var(--platinum);
+  --font-sans: var(--font-inter, 'Inter', sans-serif);
+  --font-mono: var(--font-mono, 'JetBrains Mono', monospace);
 }

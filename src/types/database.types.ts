@@ -152,6 +152,14 @@ export interface WaterLog {
   logged_at: string
 }
 
+export interface StepLog {
+  id: string
+  user_id: string
+  date: string        // "YYYY-MM-DD"
+  steps: number
+  logged_at: string
+}
+
 export interface Challenge {
   id: string
   creator_id: string

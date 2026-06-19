@@ -109,7 +109,7 @@ export default function StepsPage() {
           <div style={{ ...CARD_STYLE, padding: 18 }}>
             <p style={{ fontSize: 15, fontWeight: 600, color: '#fff', marginBottom: 14 }}>Esta semana</p>
             <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6, height: 72 }}>
-              {[...weekLogs].reverse().map((log, i) => {
+              {[...weekLogs].reverse().map((log) => {
                 const pct = Math.min(1, log.steps / GOAL)
                 return (
                   <div

@@ -37,7 +37,9 @@ export function useSteps() {
         .select()
         .single()
 
-      if (!error && data) {
+      if (error) throw error
+
+      if (data) {
         setLogs((prev) => {
           const idx = prev.findIndex((l) => l.date === date)
           if (idx >= 0) {

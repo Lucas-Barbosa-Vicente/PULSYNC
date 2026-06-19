@@ -113,7 +113,7 @@ export default function StepsPage() {
                 const pct = Math.min(1, log.steps / GOAL)
                 return (
                   <div
-                    key={i}
+                    key={log.date}
                     style={{
                       flex: 1,
                       display: 'flex',

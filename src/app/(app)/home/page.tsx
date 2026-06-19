@@ -103,9 +103,9 @@ export default function HomePage() {
     {
       icon: Footprints,
       color: '#30D158',
-      value: '3.420',
+      value: (summary?.stepsCount ?? 0).toLocaleString('pt-BR'),
       sub: 'passos hoje',
-      href: null,
+      href: '/steps',
     },
   ]
 

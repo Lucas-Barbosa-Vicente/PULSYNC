@@ -9,24 +9,33 @@
 }
 
 :root {
-  /* FUNDOS */
-  --bg          : #000000;
-  --surface     : #1C1C1E;
-  --surface-high: #2C2C2E;
-  --surface-card: #141414;
+  /* FUNDOS — Aura */
+  --bg          : #0A0B0D;
+  --surface     : #1C1E23;
+  --surface-high: #23262C;
+  --surface-card: #15161A;
 
-  /* CORES PRIMÁRIAS */
-  --primary     : #00D4AA;
-  --accent      : #FF6B35;
+  /* ACCENT / AÇÃO */
+  --primary     : #33D6C6;
+  --accent      : #33D6C6;
   --social      : #A855F7;
 
-  /* MÉTRICAS */
-  --metric-move : #FF375F;
-  --metric-steps: #AF52DE;
-  --metric-dist : #30D158;
-  --metric-sleep: #0A84FF;
+  /* ANÉIS DE ATIVIDADE */
+  --ring-move-a : #FF2D55;
+  --ring-move-b : #FF6482;
+  --ring-ex-a   : #A6FF00;
+  --ring-ex-b   : #3BE000;
+  --ring-stand-a: #00E5FF;
+  --ring-stand-b: #00B0FF;
+
+  /* CORES POR CATEGORIA */
+  --metric-move : #FF2D55;
+  --metric-steps: #30D158;
+  --metric-dist : #A6FF00;
+  --metric-sleep: #7D7AFF;
   --metric-heart: #FF6961;
-  --metric-water: #32ADE6;
+  --metric-water: #00E5FF;
+  --metric-cal  : #FF9F0A;
 
   /* TREINO */
   --workout-bg  : #0D2E0D;
@@ -34,11 +43,13 @@
 
   /* TEXTOS */
   --text-primary  : #FFFFFF;
-  --text-secondary: #8E8E93;
-  --text-muted    : #48484A;
+  --text-secondary: rgba(235,235,245,0.6);
+  --text-muted    : rgba(235,235,245,0.4);
+  --text-disabled : rgba(235,235,245,0.3);
 
-  /* BORDAS */
-  --border      : #38383A;
+  /* BORDAS / DIVISÓRIAS */
+  --border      : rgba(255,255,255,0.09);
+  --hair        : rgba(255,255,255,0.09);
 
   /* STATUS */
   --success     : #30D158;
@@ -55,7 +66,7 @@
 body {
   background-color: var(--bg);
   color: var(--text-primary);
-  font-family: var(--font-inter, 'Inter', -apple-system, BlinkMacSystemFont, sans-serif);
+  font-family: -apple-system, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -68,10 +79,15 @@ body {
   padding-bottom: env(safe-area-inset-bottom);
 }
 
-/* Tipografia Apple-like */
+/* Card gradiente Aura */
+.card-aura {
+  background: linear-gradient(180deg, #1C1E23 0%, #15161A 100%);
+}
+
+/* Tipografia */
 h1, .title-display {
   font-size: 34px;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: -0.5px;
   color: var(--text-primary);
 }
@@ -83,38 +99,51 @@ h2, .title-section {
 }
 
 .metric-value {
-  font-size: 36px;
-  font-weight: 700;
-  font-family: var(--font-mono, 'JetBrains Mono', monospace);
-  letter-spacing: -1px;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
 }
 
 .metric-value-large {
-  font-size: 52px;
-  font-weight: 900;
-  font-family: var(--font-mono, 'JetBrains Mono', monospace);
-  letter-spacing: -2px;
+  font-size: 38px;
+  font-weight: 800;
+  letter-spacing: -1px;
 }
 
 .label-today {
-  font-size: 13px;
+  font-size: 15px;
+  font-weight: 600;
   color: var(--text-secondary);
-  font-weight: 400;
+}
+
+.screen-title {
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #fff;
+  line-height: 1;
+}
+
+.section-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
 }
 
 /* Glassmorphism */
 .glass {
-  background: rgba(28, 28, 30, 0.6);
+  background: rgba(28, 30, 35, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 /* Glows */
-.glow-primary { box-shadow: 0 0 20px rgba(0, 212, 170, 0.25); }
-.glow-move    { box-shadow: 0 0 20px rgba(255, 55, 95, 0.25); }
-.glow-steps   { box-shadow: 0 0 20px rgba(175, 82, 222, 0.25); }
-.glow-dist    { box-shadow: 0 0 20px rgba(48, 209, 88, 0.25); }
+.glow-primary { box-shadow: 0 0 20px rgba(51, 214, 198, 0.25); }
+.glow-move    { box-shadow: 0 0 20px rgba(255, 45, 85, 0.25); }
+.glow-steps   { box-shadow: 0 0 20px rgba(48, 209, 88, 0.25); }
+.glow-dist    { box-shadow: 0 0 20px rgba(166, 255, 0, 0.25); }
 
 /* Pressable */
 .pressable {
@@ -123,7 +152,7 @@ h2, .title-section {
 }
 .pressable:active { transform: scale(0.96); }
 
-/* Seta de navegação nos cards (estilo iOS) */
+/* Seta de navegação nos cards */
 .card-arrow {
   width: 28px;
   height: 28px;
@@ -135,6 +164,8 @@ h2, .title-section {
 }
 
 /* Scrollbar */
+.noscroll::-webkit-scrollbar { display: none; }
+.noscroll { scrollbar-width: none; }
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
@@ -151,9 +182,19 @@ h2, .title-section {
   to   { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes pulseSheet {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+@keyframes pulseFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 212, 170, 0.4); }
-  50%       { box-shadow: 0 0 0 8px rgba(0, 212, 170, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(51, 214, 198, 0.4); }
+  50%       { box-shadow: 0 0 0 8px rgba(51, 214, 198, 0); }
 }
 
 @theme {
@@ -170,6 +211,7 @@ h2, .title-section {
   --color-metric-sleep: var(--metric-sleep);
   --color-metric-heart: var(--metric-heart);
   --color-metric-water: var(--metric-water);
+  --color-metric-cal  : var(--metric-cal);
   --color-workout-bg  : var(--workout-bg);
   --color-workout-icon: var(--workout-icon);
   --color-text-primary  : var(--text-primary);
@@ -183,6 +225,9 @@ h2, .title-section {
   --color-silver  : var(--silver);
   --color-gold    : var(--gold);
   --color-platinum: var(--platinum);
-  --font-sans: var(--font-inter, 'Inter', sans-serif);
+  --font-sans: -apple-system, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --font-mono: var(--font-mono, 'JetBrains Mono', monospace);
+  /* Raios Aura */
+  --radius-2xl: 26px;
+  --radius-3xl: 32px;
 }

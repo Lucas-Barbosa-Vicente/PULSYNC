@@ -2,36 +2,63 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { ChevronLeft, Dumbbell, Footprints, CheckCircle, Flame, Moon, Target } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import { useChallenges } from '@/hooks/useChallenges'
-import Button from '@/components/ui/Button'
-import Header from '@/components/layout/Header'
 import { addDays, format } from 'date-fns'
 import { toast } from 'sonner'
 import type { Challenge } from '@/types/database.types'
 
-const CHALLENGE_TYPES: { id: Challenge['type']; label: string; icon: string; unit: string; metric: string }[] = [
-  { id: 'workouts', label: 'Treinos', icon: '🏋️', unit: 'treinos', metric: 'workout_count' },
-  { id: 'steps', label: 'Passos', icon: '👣', unit: 'passos', metric: 'step_count' },
-  { id: 'habits', label: 'Hábitos', icon: '✅', unit: 'hábitos', metric: 'habit_completions' },
-  { id: 'calories', label: 'Calorias', icon: '🔥', unit: 'kcal', metric: 'calories_burned' },
-  { id: 'sleep', label: 'Sono', icon: '😴', unit: 'horas', metric: 'sleep_hours' },
-  { id: 'custom', label: 'Personalizado', icon: '🎯', unit: 'pontos', metric: 'custom' },
+const TINT = 'var(--primary)'
+const TINT_DIM = 'rgba(51,214,198,0.16)'
+const CARD_STYLE = { background: 'linear-gradient(180deg, #1C1E23 0%, #15161A 100%)', borderRadius: 26 }
+
+const CHALLENGE_TYPES: { id: Challenge['type']; label: string; Icon: React.ElementType; color: string; unit: string; metric: string }[] = [
+  { id: 'workouts',  label: 'Treinos',       Icon: Dumbbell,     color: '#FF2D55', unit: 'treinos',  metric: 'workout_count'     },
+  { id: 'steps',     label: 'Passos',        Icon: Footprints,   color: '#30D158', unit: 'passos',   metric: 'step_count'        },
+  { id: 'habits',    label: 'Hábitos',       Icon: CheckCircle,  color: '#33D6C6', unit: 'hábitos',  metric: 'habit_completions' },
+  { id: 'calories',  label: 'Calorias',      Icon: Flame,        color: '#FF9F0A', unit: 'kcal',     metric: 'calories_burned'   },
+  { id: 'sleep',     label: 'Sono',          Icon: Moon,         color: '#7D7AFF', unit: 'horas',    metric: 'sleep_hours'       },
+  { id: 'custom',    label: 'Personalizado', Icon: Target,       color: '#A6FF00', unit: 'pontos',   metric: 'custom'            },
 ]
 
-const DURATIONS = [3, 7, 14, 30]
+const DURATIONS = ['3d', '7d', '14d', '30d']
+const DURATION_DAYS: Record<string, number> = { '3d': 3, '7d': 7, '14d': 14, '30d': 30 }
+
+const INPUT_STYLE: React.CSSProperties = {
+  width: '100%',
+  height: 48,
+  background: '#23262C',
+  border: '1px solid rgba(255,255,255,0.09)',
+  borderRadius: 13,
+  paddingLeft: 16,
+  paddingRight: 16,
+  color: '#fff',
+  fontSize: 16,
+  fontWeight: 500,
+  outline: 'none',
+  fontFamily: 'inherit',
+}
+
+const LABEL_STYLE: React.CSSProperties = {
+  fontSize: 12,
+  fontWeight: 700,
+  letterSpacing: 0.4,
+  textTransform: 'uppercase' as const,
+  color: 'rgba(235,235,245,0.4)',
+  marginBottom: 10,
+}
 
 export default function NewChallengePage() {
   const router = useRouter()
   const { user } = useAuth()
   const { createChallenge } = useChallenges()
 
-  const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
-  const [type, setType] = useState<Challenge['type']>('workouts')
-  const [target, setTarget] = useState('10')
-  const [duration, setDuration] = useState(7)
-  const [isPublic, setIsPublic] = useState(true)
+  const [title, setTitle]     = useState('')
+  const [type, setType]       = useState<Challenge['type']>('workouts')
+  const [target, setTarget]   = useState('10')
+  const [dur, setDur]         = useState('7d')
+  const [visible, setVisible] = useState(true)
   const [loading, setLoading] = useState(false)
 
   const selectedType = CHALLENGE_TYPES.find((t) => t.id === type)!
@@ -41,17 +68,17 @@ export default function NewChallengePage() {
     setLoading(true)
     try {
       const start = new Date()
-      const end = addDays(start, duration)
+      const end   = addDays(start, DURATION_DAYS[dur])
       const { inviteUrl } = await createChallenge(user.id, {
         title,
-        description,
+        description: '',
         type,
         metric: selectedType.metric,
         target_value: parseInt(target) || 10,
         unit: selectedType.unit,
         start_date: format(start, 'yyyy-MM-dd'),
         end_date: format(end, 'yyyy-MM-dd'),
-        is_public: isPublic,
+        is_public: visible,
       })
 
       if (navigator.share) {
@@ -70,94 +97,172 @@ export default function NewChallengePage() {
   }
 
   return (
-    <div className="pb-28">
-      <Header title="Novo Desafio" showBack backHref="/challenges" />
+    <div className="pb-32 min-h-screen" style={{ background: 'var(--bg)' }}>
+      {/* Header */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 12,
+          paddingTop: 56,
+          paddingBottom: 8,
+          paddingLeft: 20,
+          paddingRight: 20,
+          marginBottom: 8,
+        }}
+      >
+        <button
+          onClick={() => router.back()}
+          style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4, color: TINT }}
+        >
+          <ChevronLeft size={28} color={TINT} />
+        </button>
+        <h1 style={{ fontSize: 30, fontWeight: 800, letterSpacing: -0.4, color: '#fff' }}>Novo Desafio</h1>
+      </div>
 
-      <div className="px-4 space-y-5">
-        {/* Title */}
+      <div style={{ paddingLeft: 20, paddingRight: 20, display: 'flex', flexDirection: 'column', gap: 20 }}>
+
+        {/* Nome */}
         <div>
-          <label className="block text-sm text-text-secondary mb-1">Nome do desafio</label>
+          <p style={LABEL_STYLE}>Nome do Desafio</p>
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Ex: Quem treina mais esta semana?"
-            className="w-full h-12 bg-surface border border-border rounded-xl px-4 text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary transition-colors"
+            style={INPUT_STYLE}
           />
         </div>
 
-        {/* Type */}
+        {/* Tipo */}
         <div>
-          <label className="block text-sm text-text-secondary mb-2">Tipo</label>
-          <div className="grid grid-cols-3 gap-2">
-            {CHALLENGE_TYPES.map((t) => (
-              <button
-                key={t.id}
-                onClick={() => setType(t.id)}
-                className={`flex flex-col items-center gap-1 p-3 rounded-xl bg-surface border-2 transition-all ${
-                  type === t.id ? 'border-primary' : 'border-transparent'
-                }`}
-              >
-                <span className="text-2xl">{t.icon}</span>
-                <span className="text-xs text-text-secondary">{t.label}</span>
-              </button>
-            ))}
+          <p style={LABEL_STYLE}>Tipo</p>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
+            {CHALLENGE_TYPES.map(({ id, label, Icon, color }) => {
+              const isSelected = type === id
+              return (
+                <button
+                  key={id}
+                  onClick={() => setType(id)}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: 6,
+                    padding: '14px 8px',
+                    borderRadius: 16,
+                    background: '#23262C',
+                    border: `2.5px solid ${isSelected ? TINT : 'transparent'}`,
+                    cursor: 'pointer',
+                    transition: 'border-color 150ms',
+                  }}
+                >
+                  <Icon size={24} color={color} />
+                  <span style={{ fontSize: 12, fontWeight: 600, color: 'rgba(235,235,245,0.6)' }}>
+                    {label}
+                  </span>
+                </button>
+              )
+            })}
           </div>
         </div>
 
-        {/* Target */}
+        {/* Meta */}
         <div>
-          <label className="block text-sm text-text-secondary mb-1">
-            Meta ({selectedType.unit})
-          </label>
+          <p style={LABEL_STYLE}>Meta</p>
           <input
             type="number"
             min={1}
             value={target}
             onChange={(e) => setTarget(e.target.value)}
-            className="w-full h-12 bg-surface border border-border rounded-xl px-4 text-text-primary focus:outline-none focus:border-primary transition-colors"
+            style={INPUT_STYLE}
           />
         </div>
 
-        {/* Duration */}
+        {/* Duração */}
         <div>
-          <label className="block text-sm text-text-secondary mb-2">Duração</label>
-          <div className="flex gap-2">
-            {DURATIONS.map((d) => (
-              <button
-                key={d}
-                onClick={() => setDuration(d)}
-                className={`flex-1 h-10 rounded-xl text-sm font-medium border transition-all ${
-                  duration === d
-                    ? 'bg-primary text-bg border-primary'
-                    : 'bg-surface border-border text-text-secondary'
-                }`}
-              >
-                {d}d
-              </button>
-            ))}
+          <p style={LABEL_STYLE}>Duração</p>
+          <div style={{ display: 'flex', gap: 8, background: '#23262C', borderRadius: 13, padding: 4 }}>
+            {DURATIONS.map((d) => {
+              const isSelected = dur === d
+              return (
+                <button
+                  key={d}
+                  onClick={() => setDur(d)}
+                  style={{
+                    flex: 1,
+                    height: 36,
+                    borderRadius: 10,
+                    background: isSelected ? TINT : 'transparent',
+                    color: isSelected ? '#001b08' : 'rgba(235,235,245,0.6)',
+                    fontWeight: 700,
+                    fontSize: 14,
+                    border: 'none',
+                    cursor: 'pointer',
+                    transition: 'background 150ms, color 150ms',
+                    fontFamily: 'inherit',
+                  }}
+                >
+                  {d}
+                </button>
+              )
+            })}
           </div>
         </div>
 
-        {/* Public toggle */}
-        <div className="flex items-center justify-between">
-          <label className="text-sm text-text-secondary">Visível para amigos</label>
+        {/* Visível */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <span style={{ fontSize: 16, fontWeight: 600, color: '#fff' }}>Visível para amigos</span>
           <button
-            onClick={() => setIsPublic((v) => !v)}
-            className={`w-12 h-6 rounded-full transition-colors ${isPublic ? 'bg-primary' : 'bg-surface-high'}`}
+            onClick={() => setVisible((v) => !v)}
+            style={{
+              width: 51,
+              height: 31,
+              borderRadius: 100,
+              background: visible ? TINT : '#23262C',
+              border: 'none',
+              cursor: 'pointer',
+              position: 'relative',
+              transition: 'background 200ms',
+              flexShrink: 0,
+            }}
           >
             <div
-              className={`w-5 h-5 bg-white rounded-full shadow transition-transform mx-0.5 ${
-                isPublic ? 'translate-x-6' : 'translate-x-0'
-              }`}
+              style={{
+                width: 27,
+                height: 27,
+                borderRadius: '50%',
+                background: '#fff',
+                position: 'absolute',
+                top: 2,
+                left: visible ? 22 : 2,
+                transition: 'left 200ms',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.3)',
+              }}
             />
           </button>
         </div>
-      </div>
 
-      <div className="fixed bottom-0 left-0 right-0 px-4 pb-6 pt-3 bg-bg border-t border-border max-w-[430px] mx-auto safe-bottom">
-        <Button fullWidth loading={loading} onClick={handleCreate}>
-          Criar e Convidar
-        </Button>
+        {/* Create button */}
+        <button
+          onClick={handleCreate}
+          disabled={loading || !title.trim()}
+          style={{
+            width: '100%',
+            height: 52,
+            borderRadius: 16,
+            background: loading || !title.trim() ? 'rgba(51,214,198,0.3)' : TINT,
+            color: '#001b08',
+            fontWeight: 700,
+            fontSize: 16,
+            border: 'none',
+            cursor: loading || !title.trim() ? 'not-allowed' : 'pointer',
+            transition: 'background 150ms',
+            fontFamily: 'inherit',
+          }}
+        >
+          {loading ? 'Criando...' : 'Criar desafio'}
+        </button>
+
       </div>
     </div>
   )
